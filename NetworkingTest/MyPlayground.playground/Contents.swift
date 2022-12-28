@@ -1,6 +1,6 @@
 import UIKit
 
-
+//get 서버에서 데이터 읽어오기 내가 팔로잉하는 사람들의 게시글 보기
 /*func getMethod() {
 
     // URL구조체 만들기
@@ -45,7 +45,7 @@ import UIKit
 getMethod()
  */
 
-//post 방식
+//post 방식 서버에 내가 원하는 new데이터 업로드하기 나의 포스트 올리기 / 다른 사람의 게시물에 댓글 달기 / 서비스 가입하기
 /*func postMethod() {
     
     guard let url = URL(string: "http://dummy.restapiexample.com/api/v1/create") else {
@@ -104,8 +104,8 @@ getMethod()
 }
 
 postMethod()*/
-//put 서버에 현존하는 데이터 업데이트(수정)
-func putMethod() {
+//put 서버에 현존하는 데이터 업데이트 나의 포스트 수정하기 / 다른 사람 게시물의 좋아요 누르기 / 나의 정보 수정
+/*func putMethod() {
     guard let url = URL(string: "https://reqres.in/api/users/2") else {
         print("Error: cannot create URL")
         return
@@ -155,3 +155,41 @@ func putMethod() {
 }
 
 putMethod()
+ */
+//delete 서버에 현존하는 데이터 삭제하기 나의 포스트 삭제하기
+
+
+func deleteMethod() {
+    guard let url = URL(string: "https://jsonplaceholder.typicode.com/posts/1") else {
+        print("Error: cannot create URL")
+        return
+    }
+    
+    // URL요청 생성
+    var request = URLRequest(url: url)
+    request.httpMethod = "DELETE"
+    
+    // 요청을 가지고 작업세션시작
+    URLSession.shared.dataTask(with: request) { data, response, error in
+        guard error == nil else {
+            print("Error: error calling DELETE")
+            print(error!)
+            return
+        }
+        guard let safeData = data else {
+            print("Error: Did not receive data")
+            return
+        }
+        guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
+            print("Error: HTTP request failed")
+            return
+        }
+        
+        // 원하는 모델이 있다면, JSONDecoder로 decode코드로 구현 ⭐️
+        print(String(decoding: safeData, as: UTF8.self))
+        
+    }.resume()
+}
+
+deleteMethod()
+

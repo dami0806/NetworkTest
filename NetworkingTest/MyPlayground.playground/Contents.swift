@@ -46,7 +46,7 @@ getMethod()
  */
 
 //post 방식
-func postMethod() {
+/*func postMethod() {
     
     guard let url = URL(string: "http://dummy.restapiexample.com/api/v1/create") else {
         print("Error: cannot create URL")
@@ -103,4 +103,55 @@ func postMethod() {
     }.resume()   // 시작
 }
 
-postMethod()
+postMethod()*/
+//put 서버에 현존하는 데이터 업데이트(수정)
+func putMethod() {
+    guard let url = URL(string: "https://reqres.in/api/users/2") else {
+        print("Error: cannot create URL")
+        return
+    }
+    
+    // 업로드할 모델(형태)
+    struct UploadData: Codable {
+        let name: String
+        let job: String
+    }
+    
+    // 실제 업로드할 (데이터)인스턴스 생성
+    let uploadDataModel = UploadData(name: "Nicole", job: "iOS Developer")
+    
+    // 모델을 JSON data 형태로 변환
+    guard let jsonData = try? JSONEncoder().encode(uploadDataModel) else {
+        print("Error: Trying to convert model to JSON data")
+        return
+    }
+    
+    // URL요청 생성
+    var request = URLRequest(url: url)
+    request.httpMethod = "PUT"
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    request.httpBody = jsonData
+    
+    // 요청을 가지고 작업세션시작
+    URLSession.shared.dataTask(with: request) { data, response, error in
+        guard error == nil else {
+            print("Error: error calling PUT")
+            print(error!)
+            return
+        }
+        guard let safeData = data else {
+            print("Error: Did not receive data")
+            return
+        }
+        guard let response = response as? HTTPURLResponse, (200 ..< 299) ~= response.statusCode else {
+            print("Error: HTTP request failed")
+            return
+        }
+        
+        // 원하는 모델이 있다면, JSONDecoder로 decode코드로 구현 ⭐️
+        print(String(decoding: safeData, as: UTF8.self))
+        
+    }.resume()
+}
+
+putMethod()
